@@ -69,7 +69,7 @@ class Unpacker {
             try {
                 Files.createDirectory(outDir);
             } catch (final IOException e) {
-                throw new IOException("Cant Create Directory (maybe it exists already?)", e);
+                throw new IOException("Cant create directory. (maybe it exists already?)", e);
             }
 
             // copy files

@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.10'
-    id 'org.beryx.jlink' version '2.24.1'
+    id 'org.openjfx.javafxplugin' version '0.0.12'
+    id 'org.beryx.jlink' version '2.25.0'
 }
 
 group 'com.example'
@@ -29,23 +29,23 @@ application {
 }
 
 javafx {
-    version = '17.0.1'
+    version = '18'
     modules = ['javafx.controls', 'javafx.fxml']
 }
-processResources {
-    from("src/main/resources")
-}
+//processResources {
+//    from("src/main/resources/*.css")
+//}
 
 dependencies {
 
-//    implementation 'org.jfxtras:jmetro:11.6.15'
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    implementation('org.jfxtras:jmetro:11.6.15')
+//    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
 
-test {
-    useJUnitPlatform()
-}
+//test {
+//    useJUnitPlatform()
+//}
 
 jlink {
     imageZip = project.file("${buildDir}/distributions/app-${javafx.platform.classifier}.zip")

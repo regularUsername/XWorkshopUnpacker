@@ -4,7 +4,6 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -50,7 +49,7 @@ public class MainController {
         if (db.hasFiles()) {
             success = true;
             var path = db.getFiles().get(0);
-            // TODO hier unpacker initialisieren und header lesen
+            initialize_unpacker(path);
             System.out.println(path);
         }
         event.setDropCompleted(success);
@@ -58,16 +57,7 @@ public class MainController {
 
     }
 
-    @FXML
-    protected void onBrowseInputClick() {
-        var fc = new FileChooser();
-        fc.setTitle("Open XRW Archive");
-        fc.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("XRW Dat file", "*.dat"));
-        var selectedFile = fc.showOpenDialog(inputField.getScene().getWindow());
-        if (selectedFile == null) {
-            return;
-        }
+    void initialize_unpacker(File selectedFile){
         unpacker = new Unpacker(selectedFile);
         try {
             unpacker.readHeader();
@@ -75,6 +65,10 @@ public class MainController {
             var alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
             alert.setTitle("Can't read file");
             alert.showAndWait();
+            fileList.getItems().clear();
+            fileList.disableProperty().setValue(true);
+            outputField.setText("");
+            unpackBtn.disableProperty().setValue(true);
             return;
         }
         fileList.getItems().setAll(unpacker.getFilenames());
@@ -83,6 +77,23 @@ public class MainController {
         inputField.setText(selectedFile.getPath());
         outputField.setText(selectedFile.getPath().replace(".dat", ""));
         unpackBtn.disableProperty().setValue(false);
+    }
+
+    @FXML
+    protected void onBrowseInputClick() {
+        var fc = new FileChooser();
+        fc.setTitle("Open XRW Archive");
+        var initialFile = new File(inputField.getText());
+        if(initialFile.exists() && initialFile.isFile()){
+            fc.setInitialDirectory(initialFile.getParentFile());
+        }
+        fc.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("XRW Dat file", "*.dat"));
+        var selectedFile = fc.showOpenDialog(inputField.getScene().getWindow());
+        if (selectedFile == null) {
+            return;
+        }
+        initialize_unpacker(selectedFile);
     }
 
     @FXML
