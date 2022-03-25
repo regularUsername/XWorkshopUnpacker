@@ -9,7 +9,7 @@ import java.util.Arrays;
 class Unpacker {
     private static final int BUF_SIZE = 1024 * 512;
     private final File binfile;
-    private int[] file_sizes;
+    private long[] file_sizes;
     private String[] filenames;
     private long file_offset;
     private int file_count;
@@ -28,14 +28,11 @@ class Unpacker {
             // read and check the header
             var sig = new byte[4];
             raf.read(sig);
-            /*
-            korrekt wäre es alle mit Integer.toUnsignedLong() umzuwandeln,da es in uint32 sind,
-            aber ist nur ein Problem wenn h_fsize größer oder gleich 2^31 ist
-            */
             var h_version = raf.readInt();
             file_count = raf.readInt();
             var h_fname_len = raf.readInt();
-            var h_fsize = raf.readInt();
+            // convert to long because fsize is an unsigned integer
+            var h_fsize = Integer.toUnsignedLong(raf.readInt());
             System.out.println("Signature: " + new String(sig));
             System.out.println("Version: " + h_version);
             System.out.println("File Count: " + file_count);
@@ -48,11 +45,9 @@ class Unpacker {
                 throw new IOException("Invalid Header Version");
             }
 
-            // das selbe wie oben da uint32 in der datei
-            // read the filesizes
-            file_sizes = new int[file_count];
+            file_sizes = new long[file_count];
             for (int i = 0; i < file_count; i++) {
-                file_sizes[i] = raf.readInt();
+                file_sizes[i] = Integer.toUnsignedLong(raf.readInt());
             }
             // read and split the \0 seperated filenames
             var filenames_buf = new byte[h_fname_len];
@@ -80,7 +75,7 @@ class Unpacker {
                 try (var outputStream = new FileOutputStream(outfile)) {
 
                     for (var x = file_sizes[i]; x > 0; x -= buf.length) {
-                        var byte_num = Math.min(x, buf.length);
+                        var byte_num = Math.toIntExact(Math.min(x, buf.length));
                         raf.read(buf, 0, byte_num);
                         outputStream.write(buf, 0, byte_num);
                     }

@@ -28,8 +28,6 @@ public class MainController {
 
     private Unpacker unpacker;
 
-    // TODO add drag and drop support
-
     @FXML
     protected void onDragOver(DragEvent event) {
         var db = event.getDragboard();
