@@ -70,10 +70,12 @@ public class MainController {
             return;
         }
         fileList.getItems().setAll(unpacker.getFilenames());
-        fileList.getItems().add("contents.xml");
+        fileList.getItems().add("content.xml");
         fileList.disableProperty().setValue(false);
-        inputField.setText(selectedFile.getPath());
-        outputField.setText(selectedFile.getPath().replace(".dat", ""));
+        var filepath = selectedFile.getPath();
+        inputField.setText(filepath);
+        // strip extension and version number from filename
+        outputField.setText(filepath.replaceAll("(?:_v\\d+)?\\.dat$", ""));
         unpackBtn.disableProperty().setValue(false);
     }
 

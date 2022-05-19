@@ -16,7 +16,6 @@ public class MainApplication extends Application {
 
 
         Scene scene = new Scene(fxmlLoader.load(), 600, 240);
-//        scene.getStylesheets().add(MainApplication.class.getResource("style.css").toExternalForm());
         stage.setMinWidth(600);
         stage.setMinHeight(400);
         stage.setTitle("X4 Workshop Mod Unpacker");

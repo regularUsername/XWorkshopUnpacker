@@ -73,17 +73,17 @@ class Unpacker {
                 var outfile = Paths.get(outDir.toString(), filenames[i]).toFile();
                 System.out.println("Creating File: " + outfile + " (" + file_sizes[i] + " bytes)");
                 try (var outputStream = new FileOutputStream(outfile)) {
-
+                    int byte_num;
                     for (var x = file_sizes[i]; x > 0; x -= buf.length) {
-                        var byte_num = Math.toIntExact(Math.min(x, buf.length));
+                        byte_num = Math.toIntExact(Math.min(x, buf.length));
                         raf.read(buf, 0, byte_num);
                         outputStream.write(buf, 0, byte_num);
                     }
                 }
             }
 
-            //copy contents.xml
-            var outfile = Paths.get(outDir.toString(), "contents.xml").toFile();
+            //copy content.xml
+            var outfile = Paths.get(outDir.toString(), "content.xml").toFile();
             System.out.println("Creating File: " + outfile);
 
             try(var outputStream = new FileOutputStream(outfile)) {
